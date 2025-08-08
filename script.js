@@ -493,6 +493,10 @@ function showTraditionalOutfit() {
     currentTraditionalOutfit = new Image();
     currentTraditionalOutfit.onload = function() {
         console.log('تم تحميل الزي الإماراتي بنجاح');
+        // إعادة رسم الوضع التجريبي إذا كان نشطاً
+        if (isDemoMode) {
+            drawDemoBackground();
+        }
     };
     currentTraditionalOutfit.src = outfitPath;
 }
@@ -703,6 +707,10 @@ function selectGlasses(src) {
     currentGlassesImage = new Image();
     currentGlassesImage.onload = function() {
         console.log(`تم تحميل النظارات: ${src}`);
+        // إعادة رسم الوضع التجريبي إذا كان نشطاً
+        if (isDemoMode) {
+            drawDemoBackground();
+        }
     };
     currentGlassesImage.src = src;
     updateActiveOption('glasses-options', event.target.closest('.option-item'));
@@ -713,6 +721,10 @@ function selectWatch(src) {
     currentWatchImage = new Image();
     currentWatchImage.onload = function() {
         console.log(`تم تحميل الساعة: ${src}`);
+        // إعادة رسم الوضع التجريبي إذا كان نشطاً
+        if (isDemoMode) {
+            drawDemoBackground();
+        }
     };
     currentWatchImage.src = src;
     updateActiveOption('watches-options', event.target.closest('.option-item'));
@@ -723,6 +735,10 @@ function selectBag(src) {
     currentBagImage = new Image();
     currentBagImage.onload = function() {
         console.log(`تم تحميل الحقيبة: ${src}`);
+        // إعادة رسم الوضع التجريبي إذا كان نشطاً
+        if (isDemoMode) {
+            drawDemoBackground();
+        }
     };
     currentBagImage.src = src;
     updateActiveOption('bags-options', event.target.closest('.option-item'));
@@ -736,6 +752,11 @@ function removeItem(itemType) {
         currentWatchImage = null;
     } else if (itemType === 'bag') {
         currentBagImage = null;
+    }
+    
+    // إعادة رسم الوضع التجريبي إذا كان نشطاً
+    if (isDemoMode) {
+        drawDemoBackground();
     }
     
     // إزالة التحديد النشط
@@ -757,6 +778,11 @@ function clearAllItems() {
     currentGlassesImage = null;
     currentWatchImage = null;
     currentBagImage = null;
+    
+    // إعادة رسم الوضع التجريبي إذا كان نشطاً
+    if (isDemoMode) {
+        drawDemoBackground();
+    }
     
     // إزالة جميع التحديدات النشطة
     document.querySelectorAll('.option-item').forEach(opt => opt.classList.remove('active'));
@@ -872,7 +898,12 @@ function goBack() {
 }
 
 // عرض الوضع التجريبي
+// متغير لتتبع الوضع التجريبي
+let isDemoMode = false;
+
 function showDemoMode() {
+    isDemoMode = true;
+    
     // رسالة الوضع التجريبي
     const demoDiv = document.createElement('div');
     demoDiv.id = 'demo-mode-banner';
@@ -900,37 +931,18 @@ function showDemoMode() {
     
     document.getElementById('try-on-screen').appendChild(demoDiv);
     
-    // إخفاء الفيديو وإظهار صورة تجريبية
+    // إخفاء الفيديو وتهيئة Canvas للوضع التجريبي
     const video = document.getElementById('video');
     video.style.display = 'none';
     
-    // إنشاء صورة تجريبية محسنة
-    const demoImage = document.createElement('div');
-    demoImage.id = 'demo-placeholder';
-    demoImage.style.cssText = `
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        color: white;
-        text-align: center;
-        position: relative;
-        border-radius: 15px;
-        margin: 10px;
-    `;
+    // تهيئة Canvas للوضع التجريبي
+    canvas = canvasElement;
+    ctx = canvas.getContext('2d');
+    canvas.width = 640;
+    canvas.height = 480;
     
-    const placeholderText = currentLanguage === 'ar' ? 
-        '👤<br><br>صورة تجريبية<br><small>يمكنك تجربة الأزياء والإكسسوارات</small>' : 
-        '👤<br><br>Demo Image<br><small>You can try outfits and accessories</small>';
-    
-    demoImage.innerHTML = placeholderText;
-    
-    const cameraContainer = document.querySelector('.camera-container');
-    cameraContainer.appendChild(demoImage);
+    // رسم خلفية تجريبية
+    drawDemoBackground();
     
     // إضافة تأثير النبض للرسالة
     const style = document.createElement('style');
@@ -942,6 +954,113 @@ function showDemoMode() {
         }
     `;
     document.head.appendChild(style);
+}
+
+// رسم خلفية تجريبية
+function drawDemoBackground() {
+    if (!ctx) return;
+    
+    // رسم خلفية متدرجة
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, '#667eea');
+    gradient.addColorStop(1, '#764ba2');
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // رسم شكل شخص بسيط
+    drawDemoPerson();
+    
+    // رسم الأكسسوارات المحددة
+    drawDemoAccessories();
+}
+
+// رسم شكل شخص تجريبي
+function drawDemoPerson() {
+    ctx.save();
+    
+    // لون الشخص
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.lineWidth = 3;
+    
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    
+    // رسم الرأس
+    ctx.beginPath();
+    ctx.arc(centerX, centerY - 80, 60, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    
+    // رسم الجسم
+    ctx.beginPath();
+    ctx.roundRect(centerX - 40, centerY - 20, 80, 120, 10);
+    ctx.fill();
+    ctx.stroke();
+    
+    // رسم الذراعين
+    ctx.beginPath();
+    ctx.roundRect(centerX - 80, centerY - 10, 35, 80, 10);
+    ctx.fill();
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.roundRect(centerX + 45, centerY - 10, 35, 80, 10);
+    ctx.fill();
+    ctx.stroke();
+    
+    ctx.restore();
+}
+
+// رسم الأكسسوارات في الوضع التجريبي
+function drawDemoAccessories() {
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    
+    // رسم الزي الإماراتي
+    if (currentTraditionalOutfit) {
+        ctx.drawImage(
+            currentTraditionalOutfit,
+            centerX - 60,
+            centerY - 100,
+            120,
+            200
+        );
+    }
+    
+    // رسم النظارات
+    if (currentGlassesImage) {
+        ctx.drawImage(
+            currentGlassesImage,
+            centerX - 50,
+            centerY - 95,
+            100,
+            40
+        );
+    }
+    
+    // رسم الساعة
+    if (currentWatchImage) {
+        ctx.drawImage(
+            currentWatchImage,
+            centerX - 90,
+            centerY + 20,
+            40,
+            40
+        );
+    }
+    
+    // رسم الحقيبة (للنساء فقط)
+    if (currentGender === 'female' && currentBagImage) {
+        ctx.drawImage(
+            currentBagImage,
+            centerX + 60,
+            centerY + 30,
+            50,
+            60
+        );
+    }
 }
 
 // تحديث النصوص عند التحميل
