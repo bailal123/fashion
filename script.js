@@ -447,6 +447,12 @@ async function initializeMediaPipe() {
     camera.start();
 }
 
+// متغيرات الصور المحملة
+let currentGlassesImage = null;
+let currentWatchImage = null;
+let currentBagImage = null;
+let currentTraditionalOutfit = null;
+
 // معالجة نتائج تتبع الوجه
 function onResults(results) {
     ctx.save();
@@ -455,59 +461,117 @@ function onResults(results) {
     // رسم الفيديو
     ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
     
-    if (results.faceLandmarks) {
-        positionGlasses(results.faceLandmarks);
+    // رسم الزي الإماراتي إذا كان محدداً
+    if (currentTraditionalOutfit) {
+        drawTraditionalOutfit(results.poseLandmarks);
     }
     
+    // رسم النظارات
+    if (results.faceLandmarks && currentGlassesImage) {
+        drawGlasses(results.faceLandmarks);
+    }
+    
+    // رسم الساعة والحقيبة
     if (results.poseLandmarks) {
-        positionWatch(results.poseLandmarks);
-        if (currentGender === 'female') {
-            positionBag(results.poseLandmarks);
+        if (currentWatchImage) {
+            drawWatch(results.poseLandmarks);
+        }
+        if (currentGender === 'female' && currentBagImage) {
+            drawBag(results.poseLandmarks);
         }
     }
     
     ctx.restore();
 }
 
-// عرض الزي الإماراتي
+// تحميل وعرض الزي الإماراتي
 function showTraditionalOutfit() {
-    const outfit = document.getElementById('traditional-outfit');
     const outfitPath = currentGender === 'male' ? 
         'assets/traditional/kandura.png' : 
         'assets/traditional/abaya.png';
     
-    outfit.src = outfitPath;
-    outfit.style.display = 'block';
-    outfit.style.width = '100%';
-    outfit.style.height = '100%';
-    outfit.style.objectFit = 'cover';
+    currentTraditionalOutfit = new Image();
+    currentTraditionalOutfit.onload = function() {
+        console.log('تم تحميل الزي الإماراتي بنجاح');
+    };
+    currentTraditionalOutfit.src = outfitPath;
 }
 
-// تحديد موضع النظارات
-function positionGlasses(faceLandmarks) {
-    const glasses = document.getElementById('glasses');
-    if (glasses.style.display === 'none') return;
+// رسم الزي الإماراتي
+function drawTraditionalOutfit(poseLandmarks) {
+    if (!currentTraditionalOutfit || !poseLandmarks) return;
+    
+    // نقاط الكتفين والوركين لتحديد حجم وموضع الزي
+    const leftShoulder = poseLandmarks[11];
+    const rightShoulder = poseLandmarks[12];
+    const leftHip = poseLandmarks[23];
+    const rightHip = poseLandmarks[24];
+    
+    if (leftShoulder && rightShoulder && leftHip && rightHip) {
+        const shoulderWidth = Math.abs(rightShoulder.x - leftShoulder.x) * canvas.width;
+        const bodyHeight = Math.abs(leftHip.y - leftShoulder.y) * canvas.height;
+        
+        const centerX = (leftShoulder.x + rightShoulder.x) / 2 * canvas.width;
+        const topY = leftShoulder.y * canvas.height;
+        
+        // رسم الزي مع تكبير مناسب
+        const outfitWidth = shoulderWidth * 2.5;
+        const outfitHeight = bodyHeight * 2.8;
+        
+        ctx.drawImage(
+            currentTraditionalOutfit,
+            centerX - outfitWidth / 2,
+            topY - outfitHeight * 0.1,
+            outfitWidth,
+            outfitHeight
+        );
+    }
+}
+
+// رسم النظارات
+function drawGlasses(faceLandmarks) {
+    if (!currentGlassesImage) return;
     
     // نقاط العينين
     const leftEye = faceLandmarks[33];
     const rightEye = faceLandmarks[263];
+    const noseTip = faceLandmarks[1];
     
-    if (leftEye && rightEye) {
+    if (leftEye && rightEye && noseTip) {
         const centerX = (leftEye.x + rightEye.x) / 2 * canvas.width;
         const centerY = (leftEye.y + rightEye.y) / 2 * canvas.height;
         const eyeDistance = Math.abs(rightEye.x - leftEye.x) * canvas.width;
         
-        glasses.style.left = (centerX - eyeDistance * 0.8) + 'px';
-        glasses.style.top = (centerY - eyeDistance * 0.3) + 'px';
-        glasses.style.width = (eyeDistance * 1.6) + 'px';
-        glasses.style.height = (eyeDistance * 0.8) + 'px';
+        // حساب زاوية الوجه
+        const angle = Math.atan2(rightEye.y - leftEye.y, rightEye.x - leftEye.x);
+        
+        // حفظ حالة الـ context
+        ctx.save();
+        
+        // تحريك وتدوير النظارات
+        ctx.translate(centerX, centerY);
+        ctx.rotate(angle);
+        
+        // رسم النظارات
+        const glassesWidth = eyeDistance * 2.2;
+        const glassesHeight = eyeDistance * 1.0;
+        
+        ctx.drawImage(
+            currentGlassesImage,
+            -glassesWidth / 2,
+            -glassesHeight / 2,
+            glassesWidth,
+            glassesHeight
+        );
+        
+        // استعادة حالة الـ context
+        ctx.restore();
     }
 }
 
-// تحديد موضع الساعة
-function positionWatch(poseLandmarks) {
-    const watch = document.getElementById('watch');
-    if (watch.style.display === 'none') return;
+// رسم الساعة
+function drawWatch(poseLandmarks) {
+    if (!currentWatchImage) return;
     
     // نقطة المعصم الأيسر
     const leftWrist = poseLandmarks[15];
@@ -516,29 +580,42 @@ function positionWatch(poseLandmarks) {
         const x = leftWrist.x * canvas.width;
         const y = leftWrist.y * canvas.height;
         
-        watch.style.left = (x - 30) + 'px';
-        watch.style.top = (y - 30) + 'px';
-        watch.style.width = '60px';
-        watch.style.height = '60px';
+        // حجم الساعة
+        const watchSize = 80;
+        
+        ctx.drawImage(
+            currentWatchImage,
+            x - watchSize / 2,
+            y - watchSize / 2,
+            watchSize,
+            watchSize
+        );
     }
 }
 
-// تحديد موضع الحقيبة
-function positionBag(poseLandmarks) {
-    const bag = document.getElementById('bag');
-    if (bag.style.display === 'none') return;
+// رسم الحقيبة
+function drawBag(poseLandmarks) {
+    if (!currentBagImage) return;
     
     // نقطة الكتف الأيمن
     const rightShoulder = poseLandmarks[12];
+    const rightElbow = poseLandmarks[14];
     
     if (rightShoulder && rightShoulder.visibility > 0.5) {
         const x = rightShoulder.x * canvas.width;
         const y = rightShoulder.y * canvas.height;
         
-        bag.style.left = (x + 20) + 'px';
-        bag.style.top = (y + 50) + 'px';
-        bag.style.width = '80px';
-        bag.style.height = '100px';
+        // حجم الحقيبة
+        const bagWidth = 100;
+        const bagHeight = 120;
+        
+        ctx.drawImage(
+            currentBagImage,
+            x + 30,
+            y + 60,
+            bagWidth,
+            bagHeight
+        );
     }
 }
 
@@ -623,32 +700,43 @@ function createRemoveButton(itemType) {
 
 // اختيار النظارات
 function selectGlasses(src) {
-    const glasses = document.getElementById('glasses');
-    glasses.src = src;
-    glasses.style.display = 'block';
+    currentGlassesImage = new Image();
+    currentGlassesImage.onload = function() {
+        console.log(`تم تحميل النظارات: ${src}`);
+    };
+    currentGlassesImage.src = src;
     updateActiveOption('glasses-options', event.target.closest('.option-item'));
 }
 
 // اختيار الساعة
 function selectWatch(src) {
-    const watch = document.getElementById('watch');
-    watch.src = src;
-    watch.style.display = 'block';
+    currentWatchImage = new Image();
+    currentWatchImage.onload = function() {
+        console.log(`تم تحميل الساعة: ${src}`);
+    };
+    currentWatchImage.src = src;
     updateActiveOption('watches-options', event.target.closest('.option-item'));
 }
 
 // اختيار الحقيبة
 function selectBag(src) {
-    const bag = document.getElementById('bag');
-    bag.src = src;
-    bag.style.display = 'block';
+    currentBagImage = new Image();
+    currentBagImage.onload = function() {
+        console.log(`تم تحميل الحقيبة: ${src}`);
+    };
+    currentBagImage.src = src;
     updateActiveOption('bags-options', event.target.closest('.option-item'));
 }
 
 // إزالة عنصر
 function removeItem(itemType) {
-    const item = document.getElementById(itemType);
-    item.style.display = 'none';
+    if (itemType === 'glasses') {
+        currentGlassesImage = null;
+    } else if (itemType === 'watch') {
+        currentWatchImage = null;
+    } else if (itemType === 'bag') {
+        currentBagImage = null;
+    }
     
     // إزالة التحديد النشط
     const container = document.getElementById(itemType + (itemType === 'watch' ? 'es' : 's') + '-options');
@@ -666,9 +754,9 @@ function updateActiveOption(containerId, selectedOption) {
 
 // إزالة جميع العناصر
 function clearAllItems() {
-    document.getElementById('glasses').style.display = 'none';
-    document.getElementById('watch').style.display = 'none';
-    document.getElementById('bag').style.display = 'none';
+    currentGlassesImage = null;
+    currentWatchImage = null;
+    currentBagImage = null;
     
     // إزالة جميع التحديدات النشطة
     document.querySelectorAll('.option-item').forEach(opt => opt.classList.remove('active'));
