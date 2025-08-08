@@ -1,0 +1,14 @@
+<svg width="120" height="150" xmlns="http://www.w3.org/2000/svg">
+  <!-- حقيبة يد كلاسيكية -->
+  <!-- المقبض -->
+  <ellipse cx="60" cy="25" rx="25" ry="8" fill="none" stroke="#8B4513" stroke-width="3"/>
+  <!-- جسم الحقيبة -->
+  <rect x="20" y="40" width="80" height="90" fill="#D2691E" stroke="#8B4513" stroke-width="2" rx="10"/>
+  <!-- الغطاء -->
+  <path d="M 25 40 Q 60 30 95 40 L 95 55 Q 60 45 25 55 Z" fill="#CD853F" stroke="#8B4513" stroke-width="2"/>
+  <!-- القفل -->
+  <rect x="55" y="50" width="10" height="8" fill="#FFD700" stroke="#DAA520" stroke-width="1" rx="2"/>
+  <!-- التفاصيل -->
+  <line x1="30" y1="70" x2="90" y2="70" stroke="#8B4513" stroke-width="1"/>
+  <line x1="30" y1="100" x2="90" y2="100" stroke="#8B4513" stroke-width="1"/>
+</svg>

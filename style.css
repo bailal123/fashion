@@ -1,0 +1,427 @@
+/* إعدادات عامة */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* الشاشات */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* شاشة الترحيب */
+#welcome-screen {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.welcome-container {
+    text-align: center;
+    color: white;
+    padding: 2rem;
+}
+
+.welcome-container h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.welcome-container p {
+    font-size: 1.5rem;
+    margin-bottom: 3rem;
+    opacity: 0.9;
+}
+
+/* طلب أذونات الكاميرا */
+.camera-permission {
+    text-align: center;
+    margin: 2rem 0;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+.permission-info {
+    margin-bottom: 1.5rem;
+}
+
+.camera-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.permission-info p {
+    font-size: 1.2rem;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.permission-btn {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    margin-bottom: 1rem;
+}
+
+.permission-btn:hover {
+    background: linear-gradient(135deg, #45a049, #4CAF50);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.permission-btn:active {
+    transform: translateY(0);
+}
+
+.permission-note {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    font-style: italic;
+}
+
+.gender-selection {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.gender-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 200px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.gender-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.gender-icon {
+    font-size: 4rem;
+}
+
+.language-toggle {
+    margin-top: 2rem;
+}
+
+#lang-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 0.8rem 2rem;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#lang-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* شاشة التجربة */
+#try-on-screen {
+    background: #1a1a1a;
+    flex-direction: row;
+    padding: 0;
+}
+
+.camera-container {
+    position: relative;
+    width: 70%;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1); /* مرآة الفيديو */
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+#overlay-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.overlay-item {
+    position: absolute;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* لوحة التحكم */
+.controls-panel {
+    width: 30%;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    overflow-y: auto;
+    direction: rtl;
+}
+
+.control-section {
+    margin-bottom: 2rem;
+}
+
+.control-section h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+    text-align: center;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 0.5rem;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.option-item {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.option-item:hover {
+    border-color: #667eea;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.option-item.active {
+    border-color: #667eea;
+    background: #f0f4ff;
+}
+
+.option-item img {
+    max-width: 100%;
+    max-height: 60px;
+    object-fit: contain;
+}
+
+.option-item.remove-btn {
+    background: #ff4757;
+    color: white;
+    font-weight: bold;
+    border-color: #ff4757;
+}
+
+.option-item.remove-btn:hover {
+    background: #ff3742;
+    border-color: #ff3742;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.action-btn {
+    flex: 1;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background: #5a6fd8;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+#clear-all-btn {
+    background: #ff4757;
+}
+
+#clear-all-btn:hover {
+    background: #ff3742;
+}
+
+/* دعم اللغة الإنجليزية */
+body.en {
+    direction: ltr;
+}
+
+body.en .controls-panel {
+    direction: ltr;
+}
+
+body.en .welcome-container {
+    direction: ltr;
+}
+
+/* استجابة للشاشات الصغيرة */
+@media (max-width: 768px) {
+    #try-on-screen {
+        flex-direction: column;
+    }
+    
+    .camera-container {
+        width: 100%;
+        height: 60vh;
+    }
+    
+    .controls-panel {
+        width: 100%;
+        height: 40vh;
+        padding: 1rem;
+    }
+    
+    .gender-selection {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .gender-btn {
+        min-width: 150px;
+        min-height: 150px;
+    }
+    
+    .welcome-container h1 {
+        font-size: 2rem;
+    }
+}
+
+/* الرسائل */
+.error-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    z-index: 10000;
+    max-width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* رسائل النجاح */
+.success-message {
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.success-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.success-icon {
+    font-size: 1.2rem;
+}
+
+.success-content p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* تحسينات للشاشات التي تعمل باللمس */
+@media (pointer: coarse) {
+    .option-item {
+        min-height: 100px;
+        padding: 1rem;
+    }
+    
+    .action-btn {
+        padding: 1.5rem;
+        font-size: 1.2rem;
+    }
+    
+    .gender-btn {
+        min-height: 220px;
+        padding: 2.5rem;
+    }
+}

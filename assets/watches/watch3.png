@@ -1,0 +1,19 @@
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+  <!-- حزام الساعة المعدنية -->
+  <rect x="38" y="10" width="24" height="80" fill="#C0C0C0" rx="12"/>
+  <!-- وصلات الحزام -->
+  <line x1="38" y1="20" x2="62" y2="20" stroke="#999" stroke-width="1"/>
+  <line x1="38" y1="30" x2="62" y2="30" stroke="#999" stroke-width="1"/>
+  <line x1="38" y1="70" x2="62" y2="70" stroke="#999" stroke-width="1"/>
+  <line x1="38" y1="80" x2="62" y2="80" stroke="#999" stroke-width="1"/>
+  <!-- وجه الساعة -->
+  <circle cx="50" cy="50" r="22" fill="#FFF" stroke="#C0C0C0" stroke-width="3"/>
+  <!-- العقارب -->
+  <line x1="50" y1="50" x2="50" y2="35" stroke="#000" stroke-width="2"/>
+  <line x1="50" y1="50" x2="62" y2="50" stroke="#000" stroke-width="1"/>
+  <!-- الأرقام -->
+  <text x="50" y="33" text-anchor="middle" fill="#000" font-size="6">12</text>
+  <text x="65" y="53" text-anchor="middle" fill="#000" font-size="6">3</text>
+  <text x="50" y="70" text-anchor="middle" fill="#000" font-size="6">6</text>
+  <text x="37" y="53" text-anchor="middle" fill="#000" font-size="6">9</text>
+</svg>

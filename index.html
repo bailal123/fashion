@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تجربة الأزياء الإماراتية</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- شاشة الترحيب -->
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-container">
+            <h1>مرحباً بك في تجربة الأزياء الإماراتية</h1>
+            <p>اختر جنسك لبدء التجربة</p>
+            <!-- طلب أذونات الكاميرا -->
+            <div class="camera-permission" id="camera-permission">
+                <div class="permission-info">
+                    <span class="camera-icon">📷</span>
+                    <p>للحصول على أفضل تجربة، يرجى السماح بالوصول للكاميرا</p>
+                </div>
+                <button id="request-camera-btn" class="permission-btn">
+                    <span>🔓 السماح بالوصول للكاميرا</span>
+                </button>
+                <p class="permission-note">يمكنك أيضاً استخدام التطبيق في الوضع التجريبي بدون كاميرا</p>
+            </div>
+            
+            <div class="gender-selection" id="gender-selection" style="display: none;">
+                <button class="gender-btn" data-gender="male">
+                    <span>ذكر</span>
+                    <div class="gender-icon male-icon">👨</div>
+                </button>
+                <button class="gender-btn" data-gender="female">
+                    <span>أنثى</span>
+                    <div class="gender-icon female-icon">👩</div>
+                </button>
+            </div>
+            <div class="language-toggle">
+                <button id="lang-toggle">English</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- شاشة التجربة -->
+    <div id="try-on-screen" class="screen">
+        <div class="camera-container">
+            <video id="video" autoplay muted playsinline></video>
+            <canvas id="canvas"></canvas>
+            <div id="overlay-container">
+                <!-- الأزياء الإماراتية -->
+                <img id="traditional-outfit" class="overlay-item" style="display: none;">
+                
+                <!-- النظارات -->
+                <img id="glasses" class="overlay-item" style="display: none;">
+                
+                <!-- الساعات -->
+                <img id="watch" class="overlay-item" style="display: none;">
+                
+                <!-- الحقائب (للنساء فقط) -->
+                <img id="bag" class="overlay-item" style="display: none;">
+            </div>
+        </div>
+        
+        <div class="controls-panel">
+            <div class="control-section">
+                <h3>النظارات</h3>
+                <div id="glasses-options" class="options-grid"></div>
+            </div>
+            
+            <div class="control-section">
+                <h3>الساعات</h3>
+                <div id="watches-options" class="options-grid"></div>
+            </div>
+            
+            <div id="bags-section" class="control-section" style="display: none;">
+                <h3>الحقائب</h3>
+                <div id="bags-options" class="options-grid"></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="back-btn" class="action-btn">العودة</button>
+                <button id="clear-all-btn" class="action-btn">إزالة الكل</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

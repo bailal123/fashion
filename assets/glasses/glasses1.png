@@ -1,0 +1,10 @@
+<svg width="200" height="80" xmlns="http://www.w3.org/2000/svg">
+  <!-- إطار النظارة -->
+  <ellipse cx="50" cy="40" rx="35" ry="25" fill="none" stroke="#333" stroke-width="3"/>
+  <ellipse cx="150" cy="40" rx="35" ry="25" fill="none" stroke="#333" stroke-width="3"/>
+  <!-- الجسر -->
+  <line x1="85" y1="40" x2="115" y2="40" stroke="#333" stroke-width="3"/>
+  <!-- الأذرع -->
+  <line x1="185" y1="40" x2="200" y2="35" stroke="#333" stroke-width="3"/>
+  <line x1="15" y1="40" x2="0" y2="35" stroke="#333" stroke-width="3"/>
+</svg>
